@@ -23,11 +23,11 @@ print 'Condition number: ',np.linalg.norm(Am.getI())*np.linalg.norm(A)
 xC = (Am.getI())*bm
 xD = np.linalg.solve(A,b)
 
-pp.plot(xC,b,'rs',label='Explicit solution (c)')
-pp.plot(xD,b,'go',label='Built-in solver (d)')
-pp.legend(loc = 'center left')
-pp.ylabel('b')
-pp.xlabel('x')
+pp.plot(b,xC,'rs',label='Explicit solution (c)')
+pp.plot(b,xD,'g^',label='Built-in solver (d)')
+pp.legend(loc = 'top left')
+pp.ylabel('x')
+pp.xlabel('b')
 pp.title('Problem One')
 pp.show()
 
