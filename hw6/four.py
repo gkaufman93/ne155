@@ -9,11 +9,8 @@ h = 0.1
 a = 4
 n = 2*a/h+1
 flux_err = 1
-k = sigf/(D*pow(pi/2/a,2)+siga)
-#k = 0.5 
 n = int(2*a/h + 1)
 err_f = 1e-4
-print 'Initial k based on analytical solution: ', k
 
 def GaussSeidel(A,b):
     n = len(b)
@@ -32,10 +29,8 @@ def GaussSeidel(A,b):
     return x 
 
 x = np.linspace(-a,a,n)
-flux = np.zeros((n,1))
-for i in range(0,n):
-    flux[i] = abs(cos(sqrt((sigf/k-siga)/D)*x[i]))
-flux /= np.linalg.norm(flux)
+#for i in range(0,n):
+    #flux[i] = abs(cos(sqrt((sigf/k-siga)/D)*x[i]))
 #flux[0][0] = 0
 #flux[80][0] = 0
 
@@ -50,6 +45,13 @@ for i in range(1,n-1):
     A[i][i-1] = K2
     A[i][i]   = K1
     A[i][i+1] = K2
+v, fluxes = np.linalg.eig(A)
+k = sigf/v[n-1]
+temp = fluxes[:,n-1]
+flux = np.zeros((n,1))
+for i in range(0,n):
+    flux[i] = temp[i]
+flux /= np.linalg.norm(flux)
 err_k = 1
 Q = sigf*flux
 numIt = 0
@@ -59,7 +61,7 @@ while (err_k > 1e-4):
     numIt += 1
     Q_prev  = Q
     k_prev  = k
-    flux = GaussSeidel(A,Q_prev)
+    flux = GaussSeidel(A,Q_prev/k)
     Q = sigf*flux
     k *= np.sum(Q)/np.sum(Q_prev)
     print '\rIteration: ',numIt,', k = ',k,'        ',
