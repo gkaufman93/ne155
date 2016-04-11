@@ -29,10 +29,6 @@ def GaussSeidel(A,b):
     return x 
 
 x = np.linspace(-a,a,n)
-#for i in range(0,n):
-    #flux[i] = abs(cos(sqrt((sigf/k-siga)/D)*x[i]))
-#flux[0][0] = 0
-#flux[80][0] = 0
 
 K1 = 2*D/pow(h,2) + siga
 K2 = -D/pow(h,2)
@@ -46,8 +42,8 @@ for i in range(1,n-1):
     A[i][i]   = K1
     A[i][i+1] = K2
 v, fluxes = np.linalg.eig(A)
-k = sigf/v[n-1]
-temp = fluxes[:,n-1]
+k = sigf/v[-1]
+temp = fluxes[:,-1]
 flux = np.zeros((n,1))
 for i in range(0,n):
     flux[i] = temp[i]
