@@ -41,18 +41,12 @@ for i in range(1,n-1):
     A[i][i-1] = K2
     A[i][i]   = K1
     A[i][i+1] = K2
-v, fluxes = np.linalg.eig(A)
-k = sigf/v[-1]
-temp = fluxes[:,-1]
-flux = np.zeros((n,1))
-for i in range(0,n):
-    flux[i] = temp[i]
-flux /= np.linalg.norm(flux)
+flux = np.ones((81,1))
+k = 1
 err_k = 1
 Q = sigf*flux
 numIt = 0
 
-print '\n'
 while (err_k > 1e-4):
     numIt += 1
     Q_prev  = Q
@@ -60,10 +54,8 @@ while (err_k > 1e-4):
     flux = GaussSeidel(A,Q_prev/k)
     Q = sigf*flux
     k *= np.sum(Q)/np.sum(Q_prev)
-    print '\rIteration: ',numIt,', k = ',k,'        ',
     err_k = abs((k-k_prev)/k) 
 
-print '\n'
 print 'Number of iterations: ', numIt
 print 'Final eigenvalue k: ', k
 
