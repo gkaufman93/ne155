@@ -27,7 +27,7 @@ class comp_flux:
             if j < self.nx-1:
                 row_arr = np.zeros((self.nx+1)*(self.nx-j-1),self.nx+1)
             A = np.append(A,row_arr,axis=0)
-        return GuassSeidel(A,self.S)
+        return GaussSeidel(A,self.S)
 
     def GaussSeidel(A,b):
         n = len(b)
