@@ -74,10 +74,22 @@ class comp_flux:
         return t[0]
 
     def sig(i,j):
-        t1 = mat_dict(mat_map[i,j])
-        t2 = mat_dict(mat_map[i+1,j])
-        t3 = mat_dict(mat_map[i+1,j+1])
-        t4 = mat_dict(mat_map[i,j+1])
+        if i != 0 and j != 0:
+            t1 = self.mat_dict(self.mat_map[i,j])
+        else:
+            t1 = (0,0)
+        if i != self.nx and j != 0:
+            t2 = self.mat_dict(self.mat_map[i+1,j])
+        else:
+            t2 = (0,0)
+        if i != self.nx and j != self.ny:
+            t3 = self.mat_dict(self.mat_map[i+1,j+1])
+        else:
+            t3 = (0,0)
+        if i != 0 and j != self.ny
+            t4 = self.mat_dict(self.mat_map[i,j+1])
+        else:
+            t4 = (0,0)
         return 0.25*self.d*self.e*(t1[1]+t2[1]+t3[1]+t4[1])
 
     def get_a(i,j,flag):

@@ -126,6 +126,8 @@ def main(inf, outd, flag):
             while sr[0] == 'C':
                 sr = f.readline().capitalize()
                 line_num += 1
+            if sr == '':
+                break
             l = sr.split()
             s_key = l[1]
             if s_key == "CONST":
@@ -142,6 +144,65 @@ def main(inf, outd, flag):
                 args = float(l.pop(2:5))
             elif s_key == "COS_Y":
                 args = float(l.pop(2:5))
+            l.pop(0:1)
+            if len(l) == 0:
+                sx_min = 0
+                sy_min = 0
+                sx_max = Nx
+                sy_max = Ny
+            elif len(l) == 1:
+                sx_min = int(float(l[0]/d))
+                sy_min = 0
+                sx_max = Nx
+                sy_max = Ny
+            elif len(l) == 2:
+                sx_min = int(float(l[0]/d))
+                sy_min = int(float(l[1]/e))
+                sx_max = Nx
+                sy_max = Ny
+            elif len(l) == 3:
+                sx_min = int(float(l[0]/d))
+                sy_min = int(float(l[1]/e))
+                sx_max = int(float(l[2]/d))
+                sy_max = Ny
+            elif len(l) == 4:
+                sx_min = int(float(l[0]/d))
+                sy_min = int(float(l[1]/e))
+                sx_max = int(float(l[2]/d))
+                sy_max = int(float(l[3]/e))
+            for i in xrange(sx_min, sx_max+1):
+                for j in xrange(sy_min, sy_max+1):
+                    if Smat[i,j] == 0:
+                        Smat[i,j] = func(s_key, i*d, j*e, args)
+                    else:
+                        Smat[i,j] *= func(s_key, i*d, j*e, args)
+        for ind in xrange(Nx+1,(Nx+1)*(Ny+1)):
+            i = ind%((Nx+1)*(Ny+1))
+            j = ind/((Nx+1)*(Ny+1))
+            if i == 0:
+                continue
+            elif j != 0:
+                S1 = Smat[i,j]
+            else:
+                S1 = 0
+            if i != Nx and j != 0:
+                S2 = Smat[i+1,j]
+            else:
+                S2 = 0
+            if i != Nx and j != Ny:
+                S3 = Smat[i+1,j+1]
+            else:
+                S3 = 0
+            if j != Ny:
+                S4 = Smat[i,j+1]
+            else:
+                S4 = 0
+            S[i+j*(Nx+1)] = 0.25*d*e*(S1[1]+S2[1]+S3[1]+S4[1])
+
+    cf = comp_flux(d,Nx,e,Ny,mat_map,mat_dict,S)
+
+    # Calculate flux iteratively using calcFlux method of comp_flux class.
+    F,numIt = cf.calcFlux()
 
 
 
