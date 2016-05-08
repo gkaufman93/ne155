@@ -46,27 +46,32 @@ class comp_flux:
         try:
             Linv  = np.linalg.inv(L)
         except np.linalg.linalg.LinAlgError:
-            raise Exception('System unsolvable. Check cell definitions and\
-                            ensure whole mesh is defined.')
+            raise Exception('System unsolvable. Check cell definitions and '\
+                            +'ensure whole mesh is defined.')
         numIt = 0
         err   = 1 
         x     = np.zeros((temp_dim,1))
         err_cnt = 0
         err_tmp = 1
-        while (err > 1e-6 and err_cnt < 500):
-            numIt += 1
-            err_tmp = err
-            stdout.write('\rGauss-Seidel solution iteration: {: >5}, '.format(numIt)\
-                         + 'Max error: {:1.4E}'.format(float(err)))
-            stdout.flush()
-            x   = np.dot(Linv,self.S-np.dot(U,x))
-            err = np.linalg.norm(np.dot(A,x)-self.S)/np.linalg.norm(self.S)
-            if err_tmp == err:
-                err_cnt += 1
-            else:
-                err_cnt = 0
+        try:
+            while (err > 1e-4 and err_cnt < 500):
+                numIt += 1
+                err_tmp = err
+                stdout.write('\rGauss-Seidel solution iteration: {: >5}, '.format(numIt)\
+                             + 'Relative error: {:.4E}'.format(float(err)))
+                stdout.flush()
+                x   = np.dot(Linv,self.S-np.dot(U,x))
+                err = np.linalg.norm(np.dot(A,x)-self.S)/np.linalg.norm(self.S)
+                if err_tmp == err:
+                    err_cnt += 1
+                else:
+                    err_cnt = 0
+            print ''
+        except KeyboardInterrupt:
+            print ''
+            print 'Gauss-Seidel process interrupted. Writing current results to '\
+                    + 'file...'
 
-        print ''
         return x,numIt,err
 
     def get_sub(self,j,ind):

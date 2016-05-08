@@ -58,6 +58,7 @@ def main(inf, outd, flag, sflag, gflag):
         log_str += '\n\n'
         print 'Mesh successfully parsed.'
         # Initialize map of materials
+        # Uses strings for values in order to better combine materials
         mat_map = [['0' for y in range(Ny+1)] for x in range(Nx+1)]
         mat_dict['0'] = (0,0)
         sr = f.readline().upper()
@@ -67,10 +68,10 @@ def main(inf, outd, flag, sflag, gflag):
                                  +'definitions.')
 
         # Get cell values in order: cell number, cell material, min x, min y,
-        # max x, max y
+        # max x, max y.
         #
         # If cells overlap and have different materials, their properties
-        # will be combined
+        # will be combined.
         log_str += 'Cells:\n'
         log_str += 'Cell' + 4*' '+'Material' + 4*' '+'X Range' + 23*' '+\
                 'Y Range' + 23*' ' + '\n\n'
@@ -229,6 +230,7 @@ def main(inf, outd, flag, sflag, gflag):
             l.pop(0)
             s_key = l.pop(0)
             log_str += s_key + '\n' 
+            # Get cofactors for various equations
             if s_key == 'CONST':
                 args = float(l.pop(0))
             elif s_key == 'LIN_X':
