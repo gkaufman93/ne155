@@ -23,7 +23,6 @@ class comp_flux:
         A = np.array([]).reshape((0,temp_dim))
         for j in xrange(0,self.ny+1):
             stdout.write('\rMaking macro-row %d...' % j)
-            stdout.flush()
             if j > 1:
                 row_arr = np.zeros((self.nx+1,(self.nx+1)*(j-1)))
             else:
@@ -35,6 +34,7 @@ class comp_flux:
                 row_arr = np.append(row_arr,np.zeros\
                                     (((self.nx+1),(self.nx+1)*(self.ny-j-1))), axis=1)
             A = np.append(A,row_arr,axis=0)
+            stdout.flush()
         print ''
         print 'Coefficient matrix finished! Running Gauss-Seidel subroutine...'
 
@@ -43,19 +43,31 @@ class comp_flux:
         for i in xrange(0,temp_dim):
             L[i][0:i+1] = A[i][0:i+1]
             U[i][i+1:temp_dim] = A[i][i+1:temp_dim]
-        Linv  = np.linalg.inv(L)
+        try:
+            Linv  = np.linalg.inv(L)
+        except np.linalg.linalg.LinAlgError:
+            raise Exception('System unsolvable. Check cell definitions and\
+                            ensure whole mesh is defined.')
         numIt = 0
-        err   = self.S 
+        err   = 1 
         x     = np.zeros((temp_dim,1))
-        print ''
-        while ((err > 1e-6).sum() > 0):
+        err_cnt = 0
+        err_tmp = 1
+        while (err > 1e-6 and err_cnt < 500):
             numIt += 1
-            stdout.write('\rGauss-Seidel solution iteration: %d' % numIt)
+            err_tmp = err
+            stdout.write('\rGauss-Seidel solution iteration: {: >5}, '.format(numIt)\
+                         + 'Max error: {:1.4E}'.format(float(err)))
             stdout.flush()
             x   = np.dot(Linv,self.S-np.dot(U,x))
-            err = abs(np.dot(A,x)-self.S)
+            err = np.linalg.norm(np.dot(A,x)-self.S)/np.linalg.norm(self.S)
+            if err_tmp == err:
+                err_cnt += 1
+            else:
+                err_cnt = 0
+
         print ''
-        return x,numIt
+        return x,numIt,err
 
     def get_sub(self,j,ind):
         if ind == 0:
@@ -74,7 +86,7 @@ class comp_flux:
                 for i in xrange(0,self.nx+1):
                     sub_arr[i,i] = self.get_a(i,j,'b')
         elif ind == 1:
-            if j == self.nx:
+            if j == self.ny:
                 return np.array([]).reshape((self.nx+1,0))
             else:
                 sub_arr = np.zeros((self.nx+1, self.nx+1))

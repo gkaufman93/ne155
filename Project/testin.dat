@@ -1,17 +1,23 @@
 Test Input File
 C
-5 10 5 10
+C
+C Commented lines should always start with a 'C'
+C These lines will be ignored.
+C
+C Example dimensions: width Nx height Ny
+5 30 5 30
 C
 C
+C Example cell: cell_number material_number xmin ymin xmax ymax
 1 1 0 0 5 5
 C
 C
-C
+C Example material: D Sig_a (macroscopic absorption cross section)
 M1 1 0.2
 C
 C
 C
 C
-C
-S CONST 1e8
+C Example source definition
+S LIN_X 0 0.2e8
 C
