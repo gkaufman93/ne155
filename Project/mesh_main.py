@@ -6,7 +6,7 @@ import matplotlib.pyplot as pp
 
 def main(inf, outd, flag, sflag, gflag):
     # Begin log_str string (output) and print first lines.
-    version_number = 0.1
+    version_number = 1.0
     log_str   = '2D Diffusion Solver V{:1.1f}\n'.format(version_number)
     log_str  += 'Authors: Gabriel Kaufman and Kyle Leverett\n'
     log_str  += 'Input file: ' + inf + '\n'
@@ -297,7 +297,7 @@ def main(inf, outd, flag, sflag, gflag):
             sr = f.readline().upper()
             line_num += 1
 
-        print 'Sources parsed. Creating source vector for flux calculation...'
+        print 'Sources parsed.'
         for ind in xrange(Nx+1,(Nx+1)*(Ny+1)):
             i = ind%(Nx+1)
             j = ind/(Nx+1)
@@ -321,17 +321,19 @@ def main(inf, outd, flag, sflag, gflag):
                 S4 = 0
             S[i+j*(Nx+1)] = 0.25*d*e*(S1+S2+S3+S4)
 
-    log_str += 'Source output:\n\n'
-    log_str += 'X' + 11*' ' + '\t\t' + 'Y' + 11*' ' + '\t\t' + 'Source' + 5*' ' + '\n\n'
-    for ind in range(len(S)):
-        px = (ind%(Nx+1))*d
-        py = (ind/(Nx+1))*e
-        log_str += '{:.6E}'.format(px) + '\t\t'
-        log_str += '{:.6E}'.format(py) + '\t\t'
-        log_str += '{:.6E}'.format(float(S[ind])) + '\t\t'
-        log_str += '\n'
-    print 'Source vector complete.'
+        print 'Source vector complete.'
+
     if sflag:
+        print 'Source printing flagged. Writing source vector to file...'
+        log_str += 'Source output:\n\n'
+        log_str += 'X' + 11*' ' + '\t\t' + 'Y' + 11*' ' + '\t\t' + 'Source' + 5*' ' + '\n\n'
+        for ind in range(len(S)):
+            px = (ind%(Nx+1))*d
+            py = (ind/(Nx+1))*e
+            log_str += '{:.6E}'.format(px) + '\t\t'
+            log_str += '{:.6E}'.format(py) + '\t\t'
+            log_str += '{:.6E}'.format(float(S[ind])) + '\t\t'
+            log_str += '\n'
         print 'Plotting source as heat map...'
         Smat  = Smat.T
         Smat  = Smat.reshape((Nx+1)*(Ny+1))
@@ -344,7 +346,7 @@ def main(inf, outd, flag, sflag, gflag):
         fig1 = pp.figure()
         pp.pcolormesh(xedge,yedge,Hs)
         cbar = pp.colorbar()
-        cbar.ax.set_ylabel('Source Strength (n/s)')
+        pp.title('Source Strength')
 
     log_str += '\n\n' + 'End of file reached. Parse complete'
     log_str += '\n\n'
@@ -382,14 +384,22 @@ def main(inf, outd, flag, sflag, gflag):
         fig2 = pp.figure()
         pp.pcolormesh(xedge,yedge,Hf)
         cbar = pp.colorbar()
-        cbar.ax.set_ylabel('Flux (n/u^2/s)')
+        pp.title('Flux')
+        #cbar.ax.set_ylabel('Flux (n/u^2/s)')
 
     if outd != '':
-        if '.' in inf and inf.rfind('.') < inf.rfind('/'):
+        if ':' in outd:
+            sep_car = '\\'
+        else:
+            sep_car = '/'
+        if outd[-1] != sep_car:
+            outd += sep_car
+        if '.' in inf and inf.rfind('.') > inf.rfind(sep_car):
             inf = inf[:inf.rfind('.')]
-        while '/' in inf:
-            inf = inf[inf.find('/')+1:]
+        while sep_car in inf:
+            inf = inf[inf.find(sep_car)+1:]
         outf = outd + inf + '.out'
+        print outf
     else:
         if '.' in inf:
             inf = inf[:inf.rfind('.')]

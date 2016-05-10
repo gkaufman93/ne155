@@ -17,6 +17,8 @@ Optional arguments:
   -s, --sgraph  Graph source strength as heat map. This plot will not appear until the code has completed. Additionally,
                 the source vector used in the flux calculation will be written to file.
 
+During runtime, if the code terminates due to an error or keyboard interrupt ("Ctrl+C") the output file will NOT be written. However, if a keyboard interrupt occurs during the Gauss-Seidel iteration stage, it will only terminate that process prematurely and continue with the rest of the code.
+
 Expected input:
 The input file resembles that for MCNP. However, given the more limited geometry, the cell and surface definitions are adjustedi to match a simple mesh. The file starts with a title; the following lines beginning with the character 'C' are considered comments, and will thus be ignored (capitalization, for this and following characters, is not important). The first non-commented line determines the total width, number of cells in the x-direction, height, and number of cells in the y-direction (in order). I.e.,
 
