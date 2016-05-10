@@ -5,19 +5,19 @@ C Commented lines should always start with a 'C'
 C These lines will be ignored.
 C
 C Example dimensions: width Nx height Ny
-5 30 5 30
+10 30 10 30
 C
 C
 C Example cell: cell_number material_number xmin ymin xmax ymax
-1 1 0 0 5 5
+1 1 0 0 10 10
 C
 C
-C Example material: D Sig_a (macroscopic absorption cross section)
-M1 1 0.2
+C Example material, depleted uranium at 14 MeV: D Sig_a (macroscopic absorption cross section)
+M1 1.7248 0.14833
 C
 C
 C
 C
-C Example source definition
-S LIN_X 0 0.2e8
+C Example source definition: func A0 [A1 A2 A3] [xmin ymin xmax ymax]
+S CONST 1e10 2 2 8 8
 C
