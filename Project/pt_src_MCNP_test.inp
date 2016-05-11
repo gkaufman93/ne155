@@ -1,0 +1,51 @@
+Title - 155 2D Solver MCNP Test
+C
+C
+C *************CELLS*************
+10 1 -19.1     -1 -2 3 4 5 -6 imp:n=1 $Square
+20 0        1:2:-3:-4:-5:6 imp:n=0 $Inner Void
+C 30 2 .3     -1:2:4:-7     imp:n=1 $Reflector 1
+C 40 2 .3     1:-2:3:-8    imp:n=1 $Reflector 2
+50 0        10             imp:n=0 $Outer Void 
+
+C ***********SURFACES************
+*1 PX 5
+*2 PY 5
+3  PY -5
+4  PX -5
+5  PZ -.1
+6  PZ .1
+C 7  PY 7
+C 8  PX 7
+10 RPP -10 10 -10 10 -10 10 
+
+C ***********MATERIALS***********
+C M1  29063.70c 0.6915 $ Copper-63                                              
+C    29065.70c 0.3085 $ Copper-65  
+C M2  74000.21c 1
+C M1    8016.70c       -0.232       $ Dry Air                                     
+C      7014.70c       -0.754                                                     
+C      18000.42c      -0.014          
+M1  92238 1.0
+C *****PLANAR**SOURCE**TERM******
+SDEF PAR=n ERG=14 POS=0 0 0 $ energy, particle type, location
+C SDEF X=d1 Y=d2 Z=d3 PAR=n ERG=14
+C SI1 -5 5 $ sampling range Xmin to Xmax
+C SP1 0 1 $ weighting for x sampling: here constant
+C SI2 -5 5 $ sampling range Ymin to Ymax
+C SP2 0 1 $ weighting for y sampling: here constant
+C SI3 -0.1 0.1
+C SP3 0 1
+C
+C **********MESH**TALLY**********
+FMESH4:N 
+      ORIGIN=-5 -5 -.1
+      IMESH=5    IINTS=100
+      JMESH=5    JINTS=100
+      KMESH=.1 KINTS=1
+FM4   1.00E+10
+C
+C
+NPS 5e7
+MODE N
+PRINT
